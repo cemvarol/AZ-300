@@ -1,0 +1,3 @@
+az group create --name NEU-VNets --location northeurope
+az network vnet create -g  NEU-VNets  -n M3VNet02 --address-prefix 10.0.0.0/16 \
+                            --subnet-name NEU-VNet01SN --subnet-prefix 10.0.0.0/24
