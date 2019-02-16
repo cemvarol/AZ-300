@@ -1,1 +1,1 @@
-Get-AzureRmResourceGroup FRC* | Remove-AzureRmResourceGroup -force
+Get-AzureRmResourceGroup *assets | Remove-AzureRmResourceGroup -force
