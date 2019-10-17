@@ -8,8 +8,8 @@ D=$(echo "$C"id01)
 
 az storage account create --name $D --resource-group IDLab1 --kind Storage --location WestEurope --sku Standard_LRS
 
-az network nsg create -g IDLab -n IDsNSG
-az network nsg rule create -g IDLab --nsg-name IDsNSG -n ConRule --priority 100 --destination-port-ranges "*" --direction Inbound
+az network nsg create -g IDLab1 -n IDsNSG
+az network nsg rule create -g IDLab1 --nsg-name IDsNSG -n ConRule --priority 100 --destination-port-ranges "*" --direction Inbound
 
 
 az network vnet create --resource-group IDLab1 --name IDVnet01  --address-prefixes 10.206.0.0/16 --subnet-name SN01 --subnet-prefix 10.206.1.0/24
