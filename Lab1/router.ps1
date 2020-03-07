@@ -1,2 +1,2 @@
-Add-WindowsFeature  Web-Server,Web-Mgmt-Tools
+Add-WindowsFeature Web-Server,Web-Mgmt-Tools
 
