@@ -1,0 +1,89 @@
+#Create Variables
+a=$(az ad signed-in-user show --query userPrincipalName)
+A=$(echo "$a" | sed -e 's/\(.*\)/\L\1/')
+B=${A:$(echo `expr index "$A" @`)}
+C=${B:: -24}
+D=$(echo "$C"rg01)
+E=$(echo "$C"rg02)
+RG1=az3000401-LabRG
+RG2=az3000402-LabRG
+VNet1=az3000401-vnet
+VNet2=az3000402-vnet
+Nsg1=NSG1
+Nsg2=NSG2
+L=eastus2
+VM1=az3000401-vm1
+VM2=az3000401-vm2-R
+VM3=az3000402-vm1
+OS=Win2016DataCenter
+VMSize=standard_B2ms
+Pip1=az3000401-pip1
+Pip2=az3000401-pip2
+Pip3=az3000402-pip1
+AP1="10.0.0.0/22"
+AP2="10.0.4.0/22"
+subnet11="10.0.0.0/24"
+subnet12="10.0.1.0/24"
+subnet21="10.0.4.0/24"
+user=Student
+pass=Pa55w.rd1234
+
+#Create RGs
+az group create -n $RG1 -l $L
+az group create -n $RG2 -l $L
+
+#Create Storage Accounts
+az storage account create -n $D -g $RG1 --kind Storage -l $L --sku Standard_LRS
+az storage account create -n $E -g $RG2 --kind Storage -l $L --sku Standard_LRS
+
+#Create NSGs
+az network nsg create -g $RG1 -n $Nsg1
+az network nsg rule create -g $RG1 --nsg-name $Nsg1 -n $Nsg1 --priority 100 --destination-port-ranges "*" --direction Inbound
+
+az network nsg create -g $RG2 -n $Nsg2
+az network nsg rule create -g $RG2 --nsg-name $Nsg2 -n $Nsg2 --priority 100 --destination-port-ranges "*" --direction Inbound
+
+#Create VNets
+az network vnet create --resource-group $RG1 --name $VNet1 --address-prefixes $AP1 --subnet-name subnet-1 --subnet-prefix $subnet11
+az network vnet subnet create --resource-group $RG1  --vnet-name $VNet1 --name subnet-2 --address-prefix $subnet12
+
+#Get VNet and Subnet Values
+export SUBNETID1=$(az network vnet subnet show --resource-group $RG1 --vnet-name $VNet1 --name subnet-1 --query id -o tsv)
+export SUBNETN1=$(az network vnet subnet show --resource-group $RG1 --vnet-name $VNet1 --name subnet-1 --query name -o tsv)
+
+
+export SUBNETID2=$(az network vnet subnet show --resource-group $RG1 --vnet-name $VNet1 --name subnet-2 --query id -o tsv)
+export SUBNETN2=$(az network vnet subnet show --resource-group $RG1 --vnet-name $VNet1 --name subnet-2 --query name -o tsv)
+
+
+#Assign NSGs
+az network vnet subnet update -g $RG1 --vnet-name $VNet1 -n $SUBNETN1 --network-security-group $Nsg1
+az network vnet subnet update -g $RG1 --vnet-name $VNet1 -n $SUBNETN2 --network-security-group $Nsg1
+
+
+
+#Create VMs
+az vm create --resource-group $RG1 -n $VM1 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip1 --public-ip-address-allocation static --subnet $SUBNETID1 --boot-diagnostics-storage $D --license-type Windows_Server --nsg ""
+
+az vm create --resource-group $RG1 -n $VM2 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip2 --public-ip-address-allocation static --subnet $SUBNETID2 --boot-diagnostics-storage $D --license-type Windows_Server --nsg ""
+
+
+
+#Create Second VNet
+
+az network vnet create --resource-group $RG2 --name $VNet2  --address-prefixes $AP2 --subnet-name subnet-1 --subnet-prefix $subnet21
+
+#Get VNet and Subnet Values of Second VNet
+export SUBNETID3=$(az network vnet subnet show --resource-group $RG2 --vnet-name $VNet2 --name subnet-1 --query id -o tsv)
+export SUBNETN3=$(az network vnet subnet show --resource-group $RG2 --vnet-name $VNet2 --name subnet-1 --query name -o tsv)
+
+#Assign NSGs
+az network vnet subnet update -g $RG2 --vnet-name $VNet2 -n $SUBNETN3 --network-security-group $Nsg2
+
+#Create Other VM
+
+az vm create --resource-group $RG2 -n $VM3 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip3 --public-ip-address-allocation static --subnet $SUBNETID3 --boot-diagnostics-storage $E --license-type Windows_Server --nsg ""
+
+
+
+
