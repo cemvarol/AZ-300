@@ -1,5 +1,5 @@
-az group create --name IDLab1 --location 'WestEurope'
-az group create --name IDLab2 --location 'WestEurope'
+az group create --name IDLab1 --location 'EastUs'
+az group create --name IDLab2 --location 'EastUs'
 
 a=$(az ad signed-in-user show --query userPrincipalName)
 A=$(echo "$a" | sed -e 's/\(.*\)/\L\1/')
