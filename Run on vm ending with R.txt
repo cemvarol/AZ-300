@@ -1,0 +1,6 @@
+Set-NetFirewallProfile -Enabled False
+
+Install-WindowsFeature Routing, RSAT-RemoteAccess
+
+rrasmgmt.msc
+
