@@ -63,9 +63,9 @@ az network vnet subnet update -g $RG1 --vnet-name $VNet1 -n $SUBNETN2 --network-
 
 
 #Create VMs
-az vm create --resource-group $RG1 -n $VM1 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip1 --public-ip-address-allocation static --subnet $SUBNETID1 --boot-diagnostics-storage $D --license-type Windows_Server --nsg ""
+az vm create --resource-group $RG1 -n $VM1 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip1 --public-ip-address-allocation static --subnet $SUBNETID1 --boot-diagnostics-storage $D --license-type Windows_Server --nsg "" --no-wait
 
-az vm create --resource-group $RG1 -n $VM2 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip2 --public-ip-address-allocation static --subnet $SUBNETID2 --boot-diagnostics-storage $D --license-type Windows_Server --nsg ""
+az vm create --resource-group $RG1 -n $VM2 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip2 --public-ip-address-allocation static --subnet $SUBNETID2 --boot-diagnostics-storage $D --license-type Windows_Server --nsg "" --no-wait
 
 
 
@@ -83,6 +83,8 @@ az network vnet subnet update -g $RG2 --vnet-name $VNet2 -n $SUBNETN3 --network-
 #Create Other VM
 
 az vm create --resource-group $RG2 -n $VM3 -l $L --image $OS --admin-username $user --admin-password $pass --size $VMSize --public-ip-address $Pip3 --public-ip-address-allocation static --subnet $SUBNETID3 --boot-diagnostics-storage $E --license-type Windows_Server --nsg ""
+
+
 
 
 
